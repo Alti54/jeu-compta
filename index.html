@@ -254,3 +254,42 @@ document.getElementById("ecriture-form").addEventListener("submit", function(e) 
 </script>
 </body>
 </html>
+// La variable 'operations' est remplacée par une version contenant 50 cas variés
+const operations = {
+  facile: [
+    { description: "Encaissement d'une créance client de 1 500 € TTC.", solution: [[512, 'Débit', 1500], [411, 'Crédit', 1500]] },
+    { description: "Achat de fournitures de bureau pour 120 € TTC payé par chèque.", solution: [[6063, 'Débit', 100], [44566, 'Débit', 20], [512, 'Crédit', 120]] },
+    { description: "Vente de marchandises pour 240 € TTC, payé en espèces.", solution: [[531, 'Débit', 240], [707, 'Crédit', 200], [44571, 'Crédit', 40]] },
+    { description: "Paiement de l’assurance annuelle 1 200 € TTC par virement.", solution: [[616, 'Débit', 1000], [44566, 'Débit', 200], [512, 'Crédit', 1200]] },
+    { description: "Facture de téléphonie 60 € TTC à régler à échéance.", solution: [[626, 'Débit', 50], [44566, 'Débit', 10], [401, 'Crédit', 60]] },
+    { description: "Achat de timbres pour 10 € TTC en espèces.", solution: [[626, 'Débit', 8.33], [44566, 'Débit', 1.67], [531, 'Crédit', 10]] },
+    { description: "Paiement d'une facture de restaurant 90 € TTC par carte.", solution: [[6256, 'Débit', 75], [44566, 'Débit', 15], [512, 'Crédit', 90]] },
+    { description: "Encaissement d'un acompte client de 600 € TTC par virement.", solution: [[512, 'Débit', 600], [4191, 'Crédit', 600]] },
+    { description: "Achat de carburant : 72 € TTC réglé par carte.", solution: [[6061, 'Débit', 60], [44566, 'Débit', 12], [512, 'Crédit', 72]] },
+    { description: "Vente de prestations pour 300 € TTC, encaissées en espèces.", solution: [[531, 'Débit', 300], [706, 'Crédit', 250], [44571, 'Crédit', 50]] }
+  ],
+  moyen: [
+    { description: "Paiement d'un loyer de 800 € TTC par chèque.", solution: [[613, 'Débit', 727.27], [44566, 'Débit', 72.73], [512, 'Crédit', 800]] },
+    { description: "Facture fournisseur reçue : prestations pour 600 € HT.", solution: [[628, 'Débit', 600], [44566, 'Débit', 120], [401, 'Crédit', 720]] },
+    { description: "Achat d’un logiciel 1 800 € HT, paiement différé.", solution: [[6068, 'Débit', 1800], [44566, 'Débit', 360], [401, 'Crédit', 2160]] },
+    { description: "Paiement d'un consultant externe 1 000 € HT par virement.", solution: [[6226, 'Débit', 1000], [44566, 'Débit', 200], [512, 'Crédit', 1200]] },
+    { description: "Paiement d'une formation 720 € TTC en carte bancaire.", solution: [[618, 'Débit', 600], [44566, 'Débit', 120], [512, 'Crédit', 720]] },
+    { description: "Réception d’une facture de nettoyage 360 € HT.", solution: [[615, 'Débit', 360], [44566, 'Débit', 72], [401, 'Crédit', 432]] },
+    { description: "Règlement partiel d’une dette fournisseur 500 € par chèque.", solution: [[401, 'Débit', 500], [512, 'Crédit', 500]] },
+    { description: "Encaissement partiel d’une créance 800 € TTC.", solution: [[512, 'Débit', 800], [411, 'Crédit', 800]] },
+    { description: "Vente à crédit pour 2 400 € TTC.", solution: [[411, 'Débit', 2400], [707, 'Crédit', 2000], [44571, 'Crédit', 400]] },
+    { description: "Achat d’équipements de bureau à 360 € TTC à crédit.", solution: [[2183, 'Débit', 300], [44562, 'Débit', 60], [401, 'Crédit', 360]] }
+  ],
+  difficile: [
+    { description: "Achat de marchandises pour 1 000 € HT, payé par virement.", solution: [[607, 'Débit', 1000], [44566, 'Débit', 200], [512, 'Crédit', 1200]] },
+    { description: "Vente de produits finis pour 2 000 € HT, paiement comptant.", solution: [[512, 'Débit', 2400], [701, 'Crédit', 2000], [44571, 'Crédit', 400]] },
+    { description: "Réception d'une facture de publicité : 1 200 € HT.", solution: [[623, 'Débit', 1200], [44566, 'Débit', 240], [401, 'Crédit', 1440]] },
+    { description: "Paiement des salaires nets : 8 000 €.", solution: [[421, 'Débit', 8000], [512, 'Crédit', 8000]] },
+    { description: "Paiement des cotisations sociales : 3 500 €.", solution: [[431, 'Débit', 3500], [512, 'Crédit', 3500]] },
+    { description: "Dotation aux amortissements sur un véhicule : 2 000 €.", solution: [[6811, 'Débit', 2000], [28182, 'Crédit', 2000]] },
+    { description: "Provision pour litige estimée à 5 000 €.", solution: [[6815, 'Débit', 5000], [1511, 'Crédit', 5000]] },
+    { description: "Constatation d’une charge constatée d’avance de 1 200 €.", solution: [[486, 'Débit', 1200], [616, 'Crédit', 1200]] },
+    { description: "Facture non parvenue estimée à 2 000 € HT.", solution: [[615, 'Débit', 2000], [408, 'Crédit', 2000]] },
+    { description: "TVA collectée à déclarer : 6 000 €.", solution: [[44571, 'Débit', 6000], [44551, 'Crédit', 6000]] }
+  ]
+};
