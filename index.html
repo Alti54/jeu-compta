@@ -1,132 +1,256 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Jeu d'Écritures Comptables</title>
-    <style>
-        body { font-family: Arial, sans-serif; margin: 20px; background-color: #f8f9fa; }
-        .container { max-width: 800px; margin: auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
-        .operation { font-size: 18px; margin-bottom: 20px; }
-        .ligne { display: flex; gap: 10px; margin-bottom: 10px; }
-        input, select { padding: 5px; width: 100px; }
-        button { padding: 10px 15px; background-color: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; }
-        button:hover { background-color: #0056b3; }
-        .solution { margin-top: 20px; background-color: #e9ecef; padding: 10px; border-radius: 6px; }
-        .score { margin-bottom: 10px; font-weight: bold; }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Jeu d'Écritures Comptables</title>
+  <style>
+    html, body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(to bottom, #f0f4f8, #d9e2ec);
+    }
+    .start-screen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background-color: #2563eb;
+      color: white;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 10;
+    }
+    .start-screen h1 {
+      font-size: 2.5em;
+      margin-bottom: 10px;
+      text-align: center;
+    }
+    .start-screen p {
+      font-size: 1.2em;
+      margin-bottom: 30px;
+      text-align: center;
+      padding: 0 20px;
+    }
+    .start-screen button {
+      padding: 12px 25px;
+      font-size: 16px;
+      background-color: white;
+      color: #2563eb;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    .logo {
+      width: 120px;
+      margin-bottom: 20px;
+    }
+    .container {
+      max-width: 900px;
+      margin: auto;
+      background: white;
+      padding: 30px;
+      margin-top: 40px;
+      border-radius: 16px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    }
+    h1 {
+      text-align: center;
+      color: #1f2937;
+    }
+    #score {
+      text-align: center;
+      font-size: 20px;
+      font-weight: bold;
+      margin-bottom: 20px;
+    }
+    .ligne {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+    input, select {
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid #cbd5e1;
+      font-size: 14px;
+      flex: 1;
+    }
+    button {
+      padding: 10px 15px;
+      margin-top: 10px;
+      background-color: #2563eb;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    button:hover {
+      background-color: #1d4ed8;
+    }
+    #solution {
+      margin-top: 20px;
+      padding: 15px;
+      background-color: #f1f5f9;
+      border-radius: 12px;
+      border-left: 4px solid #2563eb;
+    }
+    #operation {
+      font-size: 18px;
+      margin: 20px 0;
+      color: #334155;
+    }
+    .fade-out {
+      animation: fadeOut 1s ease forwards;
+    }
+    @keyframes fadeOut {
+      0% { opacity: 1; }
+      100% { opacity: 0; visibility: hidden; }
+    }
+    .fade-in {
+      animation: fadeIn 0.6s ease;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
 </head>
 <body>
-<div class="container">
-    <h1>Jeu d'Écritures Comptables</h1>
-    <div class="score" id="score">Score : 0</div>
-    <label for="difficulte">Difficulté : </label>
-    <select id="difficulte" onchange="changerDifficulte()">
-        <option value="facile">Facile</option>
-        <option value="moyen">Moyen</option>
-        <option value="difficile">Difficile</option>
-    </select>
-    <div class="operation" id="operation">Chargement...</div>
-    <form id="ecriture-form">
-        <div id="ecritures"></div>
-        <button type="button" onclick="ajouterLigne()">+ Ajouter ligne</button>
-        <button type="submit">Valider</button>
-    </form>
-    <div class="solution" id="solution"></div>
+<div class="start-screen" id="start-screen">
+  <img src="https://cdn-icons-png.flaticon.com/512/3262/3262127.png" alt="logo expert comptable" class="logo">
+  <h1>Bienvenue dans le Jeu d'Écritures Comptables</h1>
+  <p>Testez vos connaissances en comptabilité avec des cas concrets et interactifs !</p>
+  <button onclick="demarrerJeu()">Commencer</button>
 </div>
 
-<script>
-const operations = {
-    facile: [
-        {
-            description: "Encaissement d'une créance client de 1 500 € TTC.",
-            solution: [[512, 'Débit', 1500], [411, 'Crédit', 1500]]
-        }
-    ],
-    moyen: [
-        {
-            description: "Paiement d'un loyer de 800 € TTC par chèque.",
-            solution: [[613, 'Débit', 727.27], [44566, 'Débit', 72.73], [512, 'Crédit', 800]]
-        },
-        {
-            description: "Facture fournisseur reçue : prestations de services pour 600 € HT.",
-            solution: [[628, 'Débit', 600], [44566, 'Débit', 120], [401, 'Crédit', 720]]
-        }
-    ],
-    difficile: [
-        {
-            description: "Achat de marchandises pour 1 000 € HT, payé par virement bancaire.",
-            solution: [[607, 'Débit', 1000], [44566, 'Débit', 200], [512, 'Crédit', 1200]]
-        },
-        {
-            description: "Vente de produits finis pour 2 000 € HT, paiement comptant.",
-            solution: [[512, 'Débit', 2400], [701, 'Crédit', 2000], [44571, 'Crédit', 400]]
-        }
-    ]
-};
+<div class="container" style="display:none" id="main-container">
+  <h1>🎓 Jeu d'Écritures Comptables</h1>
+  <div id="score">Score : 0</div>
+  <div id="operation" class="fade-in">Chargement...</div>
+  <form id="ecriture-form">
+    <div id="ecritures"></div>
+    <button type="button" onclick="ajouterLigne()">+ Ajouter ligne</button>
+    <button type="submit">Valider</button>
+  </form>
+  <div id="solution"></div>
+</div>
 
-let niveau = 'facile';
+<audio id="start-sound" src="https://actions.google.com/sounds/v1/cartoon/slide_whistle_to_drum_hit.ogg" preload="auto"></audio>
+<audio id="transition-sound" src="https://actions.google.com/sounds/v1/cartoon/pop.ogg" preload="auto"></audio>
+<audio id="success-sound" src="https://actions.google.com/sounds/v1/cartoon/clang_and_wobble.ogg" preload="auto"></audio>
+<audio id="error-sound" src="https://actions.google.com/sounds/v1/cartoon/boing.ogg" preload="auto"></audio>
+
+<script>
 let score = 0;
+let niveau = 'facile';
 let currentOp;
 
-function chargerOperation() {
-    const opList = operations[niveau];
-    currentOp = opList[Math.floor(Math.random() * opList.length)];
-    document.getElementById("operation").innerText = currentOp.description;
-    document.getElementById("ecritures").innerHTML = '';
-    ajouterLigne();
+const operations = {
+  facile: [
+    {
+      description: "Encaissement d'une créance client de 1 500 € TTC.",
+      solution: [[512, 'Débit', 1500], [411, 'Crédit', 1500]]
+    },
+    {
+      description: "Achat de stylos pour 60 € TTC payé en espèces.",
+      solution: [[6064, 'Débit', 50], [44566, 'Débit', 10], [531, 'Crédit', 60]]
+    }
+  ],
+  moyen: [
+    {
+      description: "Paiement d'un loyer de 800 € TTC par chèque.",
+      solution: [[613, 'Débit', 727.27], [44566, 'Débit', 72.73], [512, 'Crédit', 800]]
+    }
+  ],
+  difficile: [
+    {
+      description: "Achat de marchandises pour 1 000 € HT, payé par virement bancaire.",
+      solution: [[607, 'Débit', 1000], [44566, 'Débit', 200], [512, 'Crédit', 1200]]
+    }
+  ]
+};
+
+function demarrerJeu() {
+  const audio = document.getElementById("start-sound");
+  const startScreen = document.getElementById("start-screen");
+  const mainContainer = document.getElementById("main-container");
+  if (audio) audio.play();
+  startScreen.classList.add("fade-out");
+  setTimeout(() => {
+    startScreen.style.display = "none";
+    mainContainer.style.display = "block";
+    chargerOperation();
+  }, 1000);
 }
 
-function changerDifficulte() {
-    niveau = document.getElementById("difficulte").value;
-    chargerOperation();
+function transitionNouvelleQuestion() {
+  const operation = document.getElementById("operation");
+  const transitionSound = document.getElementById("transition-sound");
+  if (operation) {
+    operation.classList.remove("fade-in");
+    void operation.offsetWidth;
+    operation.classList.add("fade-in");
+  }
+  if (transitionSound) transitionSound.play();
+}
+
+function chargerOperation() {
+  const opList = operations[niveau];
+  currentOp = opList[Math.floor(Math.random() * opList.length)];
+  transitionNouvelleQuestion();
+  document.getElementById("operation").innerText = currentOp.description;
+  document.getElementById("ecritures").innerHTML = '';
+  ajouterLigne();
 }
 
 function ajouterLigne() {
-    const div = document.createElement("div");
-    div.className = "ligne";
-    div.innerHTML = `
-        <input type="number" name="compte[]" placeholder="Compte">
-        <select name="type[]">
-            <option value="Débit">Débit</option>
-            <option value="Crédit">Crédit</option>
-        </select>
-        <input type="number" step="0.01" name="montant[]" placeholder="Montant (€)">
-    `;
-    document.getElementById("ecritures").appendChild(div);
+  const div = document.createElement("div");
+  div.className = "ligne";
+  div.innerHTML = `
+    <input type="number" name="compte[]" placeholder="Compte">
+    <select name="type[]">
+      <option value="Débit">Débit</option>
+      <option value="Crédit">Crédit</option>
+    </select>
+    <input type="number" step="0.01" name="montant[]" placeholder="Montant (€)">
+  `;
+  document.getElementById("ecritures").appendChild(div);
 }
 
 document.getElementById("ecriture-form").addEventListener("submit", function(e) {
-    e.preventDefault();
-    const comptes = Array.from(document.querySelectorAll('input[name="compte[]"]')).map(el => parseInt(el.value));
-    const types = Array.from(document.querySelectorAll('select[name="type[]"]')).map(el => el.value);
-    const montants = Array.from(document.querySelectorAll('input[name="montant[]"]')).map(el => parseFloat(el.value));
-
-    let userSolution = comptes.map((compte, i) => [compte, types[i], montants[i]]);
-
-    const correct = (a, b) => a.length === b.length && a.every(l => b.some(m => l[0] === m[0] && l[1] === m[1] && Math.abs(l[2] - m[2]) < 0.01));
-
-    let solutionText = `<strong>Solution attendue :</strong><ul>`;
-    for (let ligne of currentOp.solution) {
-        solutionText += `<li>Compte ${ligne[0]} | ${ligne[1]} | ${ligne[2]} €</li>`;
-    }
-    solutionText += `</ul>`;
-
-    if (correct(userSolution, currentOp.solution)) {
-        score++;
-        solutionText += `<p style='color:green'>✅ Bravo ! Écriture correcte.</p>`;
-    } else {
-        solutionText += `<p style='color:red'>❌ Ce n'était pas la bonne écriture.</p>`;
-    }
-
-    document.getElementById("solution").innerHTML = solutionText;
-    document.getElementById("score").innerText = `Score : ${score}`;
-    chargerOperation();
+  e.preventDefault();
+  const comptes = Array.from(document.querySelectorAll('input[name="compte[]"]')).map(el => parseInt(el.value));
+  const types = Array.from(document.querySelectorAll('select[name="type[]"]')).map(el => el.value);
+  const montants = Array.from(document.querySelectorAll('input[name="montant[]"]')).map(el => parseFloat(el.value));
+  let userSolution = comptes.map((compte, i) => [compte, types[i], montants[i]]);
+  const correct = (a, b) => a.length === b.length && a.every(l => b.some(m => l[0] === m[0] && l[1] === m[1] && Math.abs(l[2] - m[2]) < 0.01));
+  let solutionText = `<strong>Solution attendue :</strong><ul>`;
+  for (let ligne of currentOp.solution) {
+    solutionText += `<li>Compte ${ligne[0]} | ${ligne[1]} | ${ligne[2]} €</li>`;
+  }
+  solutionText += `</ul>`;
+  if (correct(userSolution, currentOp.solution)) {
+    let points = 1;
+    if (niveau === 'moyen') points = 2;
+    if (niveau === 'difficile') points = 3;
+    score += points;
+    document.getElementById("success-sound").play();
+    solutionText += `<p style='color:green'>✅ Bravo ! Écriture correcte (+${points} point${points > 1 ? 's' : ''}).</p>`;
+  } else {
+    document.getElementById("error-sound").play();
+    solutionText += `<p style='color:red'>❌ Ce n'était pas la bonne écriture.</p>`;
+  }
+  document.getElementById("solution").innerHTML = solutionText;
+  document.getElementById("score").innerText = `Score : ${score}`;
+  chargerOperation();
 });
-
-// Initialisation
-chargerOperation();
 </script>
 </body>
 </html>
-
