@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jeu d'Écritures Comptables</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; background-color: #f8f9fa; }
+        .container { max-width: 800px; margin: auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+        .operation { font-size: 18px; margin-bottom: 20px; }
+        .ligne { display: flex; gap: 10px; margin-bottom: 10px; }
+        input, select { padding: 5px; width: 100px; }
+        button { padding: 10px 15px; background-color: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; }
+        button:hover { background-color: #0056b3; }
+        .solution { margin-top: 20px; background-color: #e9ecef; padding: 10px; border-radius: 6px; }
+        .score { margin-bottom: 10px; font-weight: bold; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Jeu d'Écritures Comptables</h1>
+    <div class="score" id="score">Score : 0</div>
+    <label for="difficulte">Difficulté : </label>
+    <select id="difficulte" onchange="changerDifficulte()">
+        <option value="facile">Facile</option>
+        <option value="moyen">Moyen</option>
+        <option value="difficile">Difficile</option>
+    </select>
+    <div class="operation" id="operation">Chargement...</div>
+    <form id="ecriture-form">
+        <div id="ecritures"></div>
+        <button type="button" onclick="ajouterLigne()">+ Ajouter ligne</button>
+        <button type="submit">Valider</button>
+    </form>
+    <div class="solution" id="solution"></div>
+</div>
+
+<script>
+const operations = {
+    facile: [
+        {
+            description: "Encaissement d'une créance client de 1 500 € TTC.",
+            solution: [[512, 'Débit', 1500], [411, 'Crédit', 1500]]
+        }
+    ],
+    moyen: [
+        {
+            description: "Paiement d'un loyer de 800 € TTC par chèque.",
+            solution: [[613, 'Débit', 727.27], [44566, 'Débit', 72.73], [512, 'Crédit', 800]]
+        },
+        {
+            description: "Facture fournisseur reçue : prestations de services pour 600 € HT.",
+            solution: [[628, 'Débit', 600], [44566, 'Débit', 120], [401, 'Crédit', 720]]
+        }
+    ],
+    difficile: [
+        {
+            description: "Achat de marchandises pour 1 000 € HT, payé par virement bancaire.",
+            solution: [[607, 'Débit', 1000], [44566, 'Débit', 200], [512, 'Crédit', 1200]]
+        },
+        {
+            description: "Vente de produits finis pour 2 000 € HT, paiement comptant.",
+            solution: [[512, 'Débit', 2400], [701, 'Crédit', 2000], [44571, 'Crédit', 400]]
+        }
+    ]
+};
+
+let niveau = 'facile';
+let score = 0;
+let currentOp;
+
+function chargerOperation() {
+    const opList = operations[niveau];
+    currentOp = opList[Math.floor(Math.random() * opList.length)];
+    document.getElementById("operation").innerText = currentOp.description;
+    document.getElementById("ecritures").innerHTML = '';
+    ajouterLigne();
+}
+
+function changerDifficulte() {
+    niveau = document.getElementById("difficulte").value;
+    chargerOperation();
+}
+
+function ajouterLigne() {
+    const div = document.createElement("div");
+    div.className = "ligne";
+    div.innerHTML = `
+        <input type="number" name="compte[]" placeholder="Compte">
+        <select name="type[]">
+            <option value="Débit">Débit</option>
+            <option value="Crédit">Crédit</option>
+        </select>
+        <input type="number" step="0.01" name="montant[]" placeholder="Montant (€)">
+    `;
+    document.getElementById("ecritures").appendChild(div);
+}
+
+document.getElementById("ecriture-form").addEventListener("submit", function(e) {
+    e.preventDefault();
+    const comptes = Array.from(document.querySelectorAll('input[name="compte[]"]')).map(el => parseInt(el.value));
+    const types = Array.from(document.querySelectorAll('select[name="type[]"]')).map(el => el.value);
+    const montants = Array.from(document.querySelectorAll('input[name="montant[]"]')).map(el => parseFloat(el.value));
+
+    let userSolution = comptes.map((compte, i) => [compte, types[i], montants[i]]);
+
+    const correct = (a, b) => a.length === b.length && a.every(l => b.some(m => l[0] === m[0] && l[1] === m[1] && Math.abs(l[2] - m[2]) < 0.01));
+
+    let solutionText = `<strong>Solution attendue :</strong><ul>`;
+    for (let ligne of currentOp.solution) {
+        solutionText += `<li>Compte ${ligne[0]} | ${ligne[1]} | ${ligne[2]} €</li>`;
+    }
+    solutionText += `</ul>`;
+
+    if (correct(userSolution, currentOp.solution)) {
+        score++;
+        solutionText += `<p style='color:green'>✅ Bravo ! Écriture correcte.</p>`;
+    } else {
+        solutionText += `<p style='color:red'>❌ Ce n'était pas la bonne écriture.</p>`;
+    }
+
+    document.getElementById("solution").innerHTML = solutionText;
+    document.getElementById("score").innerText = `Score : ${score}`;
+    chargerOperation();
+});
+
+// Initialisation
+chargerOperation();
+</script>
+</body>
+</html>
+
