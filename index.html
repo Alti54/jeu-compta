@@ -116,21 +116,7 @@ const operations = {
   ]
 };
 
-const comptesPCG = [
-  { code: '101', libelle: 'Capital social' },
-  { code: '6064', libelle: 'Fournitures administratives' },
-  { code: '44566', libelle: 'TVA déductible' },
-  { code: '531', libelle: 'Caisse' },
-  { code: '512', libelle: 'Banque' },
-  { code: '707', libelle: 'Vente de marchandises' },
-  { code: '44571', libelle: 'TVA collectée' },
-  { code: '401', libelle: 'Fournisseurs' },
-  { code: '4191', libelle: 'Clients - Avances reçues' },
-  { code: '6811', libelle: 'Dotation aux amortissements' },
-  { code: '28182', libelle: 'Amortissement du matériel de transport' },
-  { code: '6815', libelle: 'Dotation aux provisions' },
-  { code: '1511', libelle: 'Provisions pour litiges' }
-];
+
 
 function ajouterLigne() {
   const div = document.createElement("div");
@@ -183,16 +169,167 @@ function togglePlanComptable() {
   plan.style.display = plan.style.display === 'none' ? 'block' : 'none';
   const pcgList = document.getElementById('pcg-list');
   if (pcgList.innerHTML === '') {
-    comptesPCG.forEach(c => {
+    const codes = Object.keys(libellesPCG).sort();
+    for (const code of codes) {
       const li = document.createElement('li');
-      li.innerHTML = `${c.code} - ${c.libelle} <button onclick="copyToClipboard('${c.code}')">📋</button>`;
+      li.textContent = `${code} - ${libellesPCG[code]}`;
+      pcgList.appendChild(li);
+    }
+  }
+}`;
+      toggleButton.style.margin = '5px 0';
+      toggleButton.style.cursor = 'pointer';
+      toggleButton.onclick = function () {
+        ul.style.display = ul.style.display === 'none' ? 'block' : 'none';
+        toggleButton.textContent = `${ul.style.display === 'none' ? '▶' : '▼'} Classe ${i}`;
+      };
+
+      const ul = document.createElement('ul');
+      ul.style.display = 'none';
+
+      for (let j = 0; j <= 99; j++) {
+        for (let k = 0; k <= 1; k++) { // simulate multiple levels
+          const suffix = k === 0 ? '' : `0${k}`;
+          const code = `${i}${j.toString().padStart(2, '0')}${suffix}`;
+          const li = document.createElement('li');
+          
+const libelle = libellesPCG[code] || `Compte ${code}`;
+li.textContent = `${code} - ${libelle}`;
+          ul.appendChild(li);
+        }
+      }
+
+      group.appendChild(toggleButton);
+      group.appendChild(ul);
+      pcgList.appendChild(group);
+    }
+  }
+}`;
+      toggleButton.style.margin = '5px 0';
+      toggleButton.style.cursor = 'pointer';
+      toggleButton.onclick = function () {
+        ul.style.display = ul.style.display === 'none' ? 'block' : 'none';
+        toggleButton.textContent = `${ul.style.display === 'none' ? '▶' : '▼'} Classe ${i}`;
+      };
+
+      const ul = document.createElement('ul');
+      ul.style.display = 'none';
+
+      for (let j = 0; j <= 99; j++) {
+        const code = `${i}${j.toString().padStart(2, '0')}`;
+        const li = document.createElement('li');
+        const libellesPCG = {
+  '101': 'Capital social',
+  '106': 'Réserves',
+  '120': 'Résultat de l'exercice (bénéfice)',
+  '129': 'Résultat de l'exercice (perte)',
+  '201': 'Frais d’établissement',
+  '2183': 'Matériel de transport',
+  '2184': 'Mobilier de bureau',
+  '28182': 'Amortissement du matériel de transport',
+  '401': 'Fournisseurs',
+  '411': 'Clients',
+  '4191': 'Clients - Avances reçues',
+  '512': 'Banque',
+  '531': 'Caisse',
+  '6063': 'Fournitures d’entretien',
+  '6064': 'Fournitures administratives',
+  '607': 'Achats de marchandises',
+  '613': 'Locations',
+  '615': 'Entretien et réparations',
+  '616': 'Primes d’assurances',
+  '6226': 'Honoraires',
+  '623': 'Publicité',
+  '6256': 'Réceptions',
+  '626': 'Télécommunications',
+  '628': 'Divers',
+  '645': 'Charges sociales',
+  '6811': 'Dotation aux amortissements',
+  '6815': 'Dotation aux provisions',
+  '701': 'Ventes de produits finis',
+  '706': 'Prestations de services',
+  '707': 'Ventes de marchandises',
+  '44562': 'TVA déductible sur immobilisations',
+  '44566': 'TVA déductible sur autres biens et services',
+  '44571': 'TVA collectée',
+  '44551': 'TVA à décaisser'
+};
+const libelle = libellesPCG[code] || `Compte ${code}`;
+li.textContent = `${code} - ${libelle}`;
+        ul.appendChild(li);
+      }
+
+      group.appendChild(toggleButton);
+      group.appendChild(ul);
+      pcgList.appendChild(group);
+    }
+  }
+} :</strong>`;
+      const ul = document.createElement('ul');
+      for (let j = 0; j <= 99; j++) {
+        const code = `${i}${j.toString().padStart(2, '0')}`;
+        const li = document.createElement('li');
+        const libellesPCG = {
+  '101': 'Capital social',
+  '106': 'Réserves',
+  '120': 'Résultat de l'exercice (bénéfice)',
+  '129': 'Résultat de l'exercice (perte)',
+  '201': 'Frais d’établissement',
+  '2183': 'Matériel de transport',
+  '2184': 'Mobilier de bureau',
+  '28182': 'Amortissement du matériel de transport',
+  '401': 'Fournisseurs',
+  '411': 'Clients',
+  '4191': 'Clients - Avances reçues',
+  '512': 'Banque',
+  '531': 'Caisse',
+  '6063': 'Fournitures d’entretien',
+  '6064': 'Fournitures administratives',
+  '607': 'Achats de marchandises',
+  '613': 'Locations',
+  '615': 'Entretien et réparations',
+  '616': 'Primes d’assurances',
+  '6226': 'Honoraires',
+  '623': 'Publicité',
+  '6256': 'Réceptions',
+  '626': 'Télécommunications',
+  '628': 'Divers',
+  '645': 'Charges sociales',
+  '6811': 'Dotation aux amortissements',
+  '6815': 'Dotation aux provisions',
+  '701': 'Ventes de produits finis',
+  '706': 'Prestations de services',
+  '707': 'Ventes de marchandises',
+  '44562': 'TVA déductible sur immobilisations',
+  '44566': 'TVA déductible sur autres biens et services',
+  '44571': 'TVA collectée',
+  '44551': 'TVA à décaisser'
+};
+const libelle = libellesPCG[code] || `Compte ${code}`;
+li.textContent = `${code} - ${libelle}`;
+        ul.appendChild(li);
+      }
+      group.appendChild(ul);
+      pcgList.appendChild(group);
+    }
+  }
+}${j.toString().padStart(2, '0')}`;
+        comptes.push({ code: code, libelle: `Compte ${code}` });
+      }
+    }
+    comptes.forEach(c => {
+      const li = document.createElement('li');
+      li.textContent = `${c.code} - ${c.libelle}`;
+      pcgList.appendChild(li);
+    });
+  }
+} - ${c.libelle} <button onclick="copyToClipboard('${c.code}')">📋</button>`;
       pcgList.appendChild(li);
     });
   }
 }
 
-function copyToClipboard(text) {
-  navigator.clipboard.writeText(text).then(() => alert(`Compte ${text} copié !`));
+ copié !`));
 }
 
 function searchPCG() {
