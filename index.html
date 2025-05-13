@@ -5,147 +5,72 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Jeu d'Écritures Comptables</title>
   <style>
-    html, body {
-      height: 100%;
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f0f4f8;
       margin: 0;
-      padding: 0;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: linear-gradient(to bottom, #f0f4f8, #d9e2ec);
-    }
-    .start-screen {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      background-color: #2563eb;
-      color: white;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      z-index: 10;
-    }
-    .start-screen h1 {
-      font-size: 2.5em;
-      margin-bottom: 10px;
-      text-align: center;
-    }
-    .start-screen p {
-      font-size: 1.2em;
-      margin-bottom: 30px;
-      text-align: center;
-      padding: 0 20px;
-    }
-    .start-screen button {
-      padding: 12px 25px;
-      font-size: 16px;
-      background-color: white;
-      color: #2563eb;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-    }
-    .logo {
-      width: 120px;
-      margin-bottom: 20px;
+      padding: 20px;
     }
     .container {
       max-width: 900px;
       margin: auto;
       background: white;
       padding: 30px;
-      margin-top: 40px;
       border-radius: 16px;
       box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
     }
-    h1 {
+    h1, #score {
       text-align: center;
-      color: #1f2937;
-    }
-    #score {
-      text-align: center;
-      font-size: 20px;
-      font-weight: bold;
-      margin-bottom: 20px;
     }
     .ligne {
       display: flex;
       gap: 10px;
       margin-bottom: 10px;
     }
-    input, select {
+    input, select, button {
       padding: 10px;
-      border-radius: 8px;
-      border: 1px solid #cbd5e1;
       font-size: 14px;
-      flex: 1;
+      border-radius: 8px;
+      border: 1px solid #ccc;
     }
     button {
-      padding: 10px 15px;
-      margin-top: 10px;
       background-color: #2563eb;
       color: white;
       border: none;
-      border-radius: 8px;
       cursor: pointer;
-      font-size: 14px;
     }
     button:hover {
       background-color: #1d4ed8;
     }
-    #solution {
+    #plan-comptable {
+      display: none;
+      max-height: 300px;
+      overflow-y: auto;
+      background: #f1f5f9;
+      border: 1px solid #ccc;
+      padding: 10px;
+      border-radius: 10px;
       margin-top: 20px;
-      padding: 15px;
-      background-color: #f1f5f9;
-      border-radius: 12px;
-      border-left: 4px solid #2563eb;
-    }
-    #operation {
-      font-size: 18px;
-      margin: 20px 0;
-      color: #334155;
-    }
-    .fade-out {
-      animation: fadeOut 1s ease forwards;
-    }
-    @keyframes fadeOut {
-      0% { opacity: 1; }
-      100% { opacity: 0; visibility: hidden; }
-    }
-    .fade-in {
-      animation: fadeIn 0.6s ease;
-    }
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
     }
   </style>
 </head>
 <body>
-<div class="start-screen" id="start-screen">
-  <img src="https://cdn-icons-png.flaticon.com/512/3262/3262127.png" alt="logo expert comptable" class="logo">
-  <h1>Bienvenue dans le Jeu d'Écritures Comptables</h1>
-  <p>Testez vos connaissances en comptabilité avec des cas concrets et interactifs !</p>
-  <button onclick="demarrerJeu()">Commencer</button>
-</div>
-
-<div class="container" style="display:none" id="main-container">
-  <h1>🎓 Jeu d'Écritures Comptables</h1>
-  <div id="score">Score : 0</div>
-  <div id="operation" class="fade-in">Chargement...</div>
-  <form id="ecriture-form">
-    <div id="ecritures"></div>
-    <button type="button" onclick="ajouterLigne()">+ Ajouter ligne</button>
-    <button type="submit">Valider</button>
-  </form>
-  <div id="solution"></div>
-</div>
-
-<audio id="start-sound" src="https://actions.google.com/sounds/v1/cartoon/slide_whistle_to_drum_hit.ogg" preload="auto"></audio>
-<audio id="transition-sound" src="https://actions.google.com/sounds/v1/cartoon/pop.ogg" preload="auto"></audio>
-<audio id="success-sound" src="https://actions.google.com/sounds/v1/cartoon/clang_and_wobble.ogg" preload="auto"></audio>
-<audio id="error-sound" src="https://actions.google.com/sounds/v1/cartoon/boing.ogg" preload="auto"></audio>
+  <div class="container">
+    <h1>🎓 Jeu d'Écritures Comptables</h1>
+    <div id="score">Score : 0</div>
+    <div id="operation">Chargement...</div>
+    <form id="ecriture-form">
+      <div id="ecritures"></div>
+      <button type="button" onclick="ajouterLigne()">+ Ajouter ligne</button>
+      <button type="submit">Valider</button>
+    </form>
+    <div id="solution"></div>
+    <button onclick="togglePlanComptable()">📘 Voir le plan comptable</button>
+    <div id="plan-comptable">
+      <input type="text" id="search-pcg" placeholder="🔍 Rechercher un compte..." onkeyup="searchPCG()" style="width: 100%; margin-bottom: 10px;">
+      <ul id="pcg-list" style="list-style: none; padding: 0;"></ul>
+    </div>
+  </div>
 
 <script>
 let score = 0;
@@ -154,61 +79,58 @@ let currentOp;
 
 const operations = {
   facile: [
-    {
-      description: "Encaissement d'une créance client de 1 500 € TTC.",
-      solution: [[512, 'Débit', 1500], [411, 'Crédit', 1500]]
-    },
-    {
-      description: "Achat de stylos pour 60 € TTC payé en espèces.",
-      solution: [[6064, 'Débit', 50], [44566, 'Débit', 10], [531, 'Crédit', 60]]
-    }
+    { description: "Achat de stylos pour 50 € HT, TVA 20%, payé en espèces.", solution: [[6064, 'Débit', 50], [44566, 'Débit', 10], [531, 'Crédit', 60]] },
+    { description: "Vente de marchandises 200 € HT, TVA 20%, payé par carte.", solution: [[512, 'Débit', 240], [707, 'Crédit', 200], [44571, 'Crédit', 40]] },
+    { description: "Achat de fournitures de bureau pour 120 € TTC payé par chèque.", solution: [[6063, 'Débit', 100], [44566, 'Débit', 20], [512, 'Crédit', 120]] },
+    { description: "Encaissement d'une créance client de 1 500 € TTC.", solution: [[512, 'Débit', 1500], [411, 'Crédit', 1500]] },
+    { description: "Paiement de l’assurance annuelle 1 200 € TTC par virement.", solution: [[616, 'Débit', 1000], [44566, 'Débit', 200], [512, 'Crédit', 1200]] },
+    { description: "Facture de téléphonie 60 € TTC à régler à échéance.", solution: [[626, 'Débit', 50], [44566, 'Débit', 10], [401, 'Crédit', 60]] },
+    { description: "Paiement d'une facture de restaurant 90 € TTC par carte.", solution: [[6256, 'Débit', 75], [44566, 'Débit', 15], [512, 'Crédit', 90]] },
+    { description: "Achat de carburant : 72 € TTC réglé par carte.", solution: [[6061, 'Débit', 60], [44566, 'Débit', 12], [512, 'Crédit', 72]] },
+    { description: "Vente de prestations pour 300 € TTC, encaissées en espèces.", solution: [[531, 'Débit', 300], [706, 'Crédit', 250], [44571, 'Crédit', 50]] },
+    { description: "Encaissement d'un acompte client de 600 € TTC par virement.", solution: [[512, 'Débit', 600], [4191, 'Crédit', 600]] }
   ],
   moyen: [
-    {
-      description: "Paiement d'un loyer de 800 € TTC par chèque.",
-      solution: [[613, 'Débit', 727.27], [44566, 'Débit', 72.73], [512, 'Crédit', 800]]
-    }
+    { description: "Paiement d'une facture fournisseur 720 € TTC par virement.", solution: [[401, 'Débit', 720], [512, 'Crédit', 720]] },
+    { description: "Encaissement d'un acompte client 300 € TTC.", solution: [[512, 'Débit', 300], [4191, 'Crédit', 300]] },
+    { description: "Achat d’un logiciel 1 800 € HT, paiement différé.", solution: [[6068, 'Débit', 1800], [44566, 'Débit', 360], [401, 'Crédit', 2160]] },
+    { description: "Paiement d'un consultant externe 1 000 € HT par virement.", solution: [[6226, 'Débit', 1000], [44566, 'Débit', 200], [512, 'Crédit', 1200]] },
+    { description: "Paiement d'une formation 720 € TTC en carte bancaire.", solution: [[618, 'Débit', 600], [44566, 'Débit', 120], [512, 'Crédit', 720]] },
+    { description: "Réception d’une facture de nettoyage 360 € HT.", solution: [[615, 'Débit', 360], [44566, 'Débit', 72], [401, 'Crédit', 432]] },
+    { description: "Règlement partiel d’une dette fournisseur 500 € par chèque.", solution: [[401, 'Débit', 500], [512, 'Crédit', 500]] },
+    { description: "Encaissement partiel d’une créance 800 € TTC.", solution: [[512, 'Débit', 800], [411, 'Crédit', 800]] },
+    { description: "Vente à crédit pour 2 400 € TTC.", solution: [[411, 'Débit', 2400], [707, 'Crédit', 2000], [44571, 'Crédit', 400]] },
+    { description: "Achat d’équipements de bureau à 360 € TTC à crédit.", solution: [[2183, 'Débit', 300], [44562, 'Débit', 60], [401, 'Crédit', 360]] }
   ],
   difficile: [
-    {
-      description: "Achat de marchandises pour 1 000 € HT, payé par virement bancaire.",
-      solution: [[607, 'Débit', 1000], [44566, 'Débit', 200], [512, 'Crédit', 1200]]
-    }
+    { description: "Dotation aux amortissements sur un véhicule : 1 200 €.", solution: [[6811, 'Débit', 1200], [28182, 'Crédit', 1200]] },
+    { description: "Provision pour litige estimée à 5 000 €.", solution: [[6815, 'Débit', 5000], [1511, 'Crédit', 5000]] },
+    { description: "Constatation d’une charge constatée d’avance de 1 200 €.", solution: [[486, 'Débit', 1200], [616, 'Crédit', 1200]] },
+    { description: "Facture non parvenue estimée à 2 000 € HT.", solution: [[615, 'Débit', 2000], [408, 'Crédit', 2000]] },
+    { description: "TVA collectée à déclarer : 6 000 €.", solution: [[44571, 'Débit', 6000], [44551, 'Crédit', 6000]] },
+    { description: "Vente de produits finis pour 2 000 € HT, paiement comptant.", solution: [[512, 'Débit', 2400], [701, 'Crédit', 2000], [44571, 'Crédit', 400]] },
+    { description: "Réception d'une facture de publicité : 1 200 € HT.", solution: [[623, 'Débit', 1200], [44566, 'Débit', 240], [401, 'Crédit', 1440]] },
+    { description: "Paiement des salaires nets : 8 000 €.", solution: [[421, 'Débit', 8000], [512, 'Crédit', 8000]] },
+    { description: "Paiement des cotisations sociales : 3 500 €.", solution: [[431, 'Débit', 3500], [512, 'Crédit', 3500]] },
+    { description: "Virement entre comptes bancaires : 2 000 €.", solution: [[512, 'Débit', 2000], [512, 'Crédit', 2000]] }
   ]
 };
 
-function demarrerJeu() {
-  const audio = document.getElementById("start-sound");
-  const startScreen = document.getElementById("start-screen");
-  const mainContainer = document.getElementById("main-container");
-  if (audio) audio.play();
-  startScreen.classList.add("fade-out");
-  setTimeout(() => {
-    startScreen.style.display = "none";
-    mainContainer.style.display = "block";
-    chargerOperation();
-  }, 1000);
-}
-
-function transitionNouvelleQuestion() {
-  const operation = document.getElementById("operation");
-  const transitionSound = document.getElementById("transition-sound");
-  if (operation) {
-    operation.classList.remove("fade-in");
-    void operation.offsetWidth;
-    operation.classList.add("fade-in");
-  }
-  if (transitionSound) transitionSound.play();
-}
-
-function chargerOperation() {
-  const opList = operations[niveau];
-  currentOp = opList[Math.floor(Math.random() * opList.length)];
-  transitionNouvelleQuestion();
-  document.getElementById("operation").innerText = currentOp.description;
-  document.getElementById("ecritures").innerHTML = '';
-  ajouterLigne();
-}
+const comptesPCG = [
+  { code: '101', libelle: 'Capital social' },
+  { code: '6064', libelle: 'Fournitures administratives' },
+  { code: '44566', libelle: 'TVA déductible' },
+  { code: '531', libelle: 'Caisse' },
+  { code: '512', libelle: 'Banque' },
+  { code: '707', libelle: 'Vente de marchandises' },
+  { code: '44571', libelle: 'TVA collectée' },
+  { code: '401', libelle: 'Fournisseurs' },
+  { code: '4191', libelle: 'Clients - Avances reçues' },
+  { code: '6811', libelle: 'Dotation aux amortissements' },
+  { code: '28182', libelle: 'Amortissement du matériel de transport' },
+  { code: '6815', libelle: 'Dotation aux provisions' },
+  { code: '1511', libelle: 'Provisions pour litiges' }
+];
 
 function ajouterLigne() {
   const div = document.createElement("div");
@@ -224,6 +146,14 @@ function ajouterLigne() {
   document.getElementById("ecritures").appendChild(div);
 }
 
+function chargerOperation() {
+  const opList = operations[niveau];
+  currentOp = opList[Math.floor(Math.random() * opList.length)];
+  document.getElementById("operation").innerText = currentOp.description;
+  document.getElementById("ecritures").innerHTML = '';
+  ajouterLigne();
+}
+
 document.getElementById("ecriture-form").addEventListener("submit", function(e) {
   e.preventDefault();
   const comptes = Array.from(document.querySelectorAll('input[name="compte[]"]')).map(el => parseInt(el.value));
@@ -237,59 +167,43 @@ document.getElementById("ecriture-form").addEventListener("submit", function(e) 
   }
   solutionText += `</ul>`;
   if (correct(userSolution, currentOp.solution)) {
-    let points = 1;
-    if (niveau === 'moyen') points = 2;
-    if (niveau === 'difficile') points = 3;
+    let points = niveau === 'facile' ? 1 : niveau === 'moyen' ? 2 : 3;
     score += points;
-    document.getElementById("success-sound").play();
-    solutionText += `<p style='color:green'>✅ Bravo ! Écriture correcte (+${points} point${points > 1 ? 's' : ''}).</p>`;
+    solutionText += `<p style='color:green'>✅ Bonne réponse (+${points} pt${points > 1 ? 's' : ''})</p>`;
   } else {
-    document.getElementById("error-sound").play();
-    solutionText += `<p style='color:red'>❌ Ce n'était pas la bonne écriture.</p>`;
+    solutionText += `<p style='color:red'>❌ Mauvaise réponse.</p>`;
   }
   document.getElementById("solution").innerHTML = solutionText;
   document.getElementById("score").innerText = `Score : ${score}`;
   chargerOperation();
 });
+
+function togglePlanComptable() {
+  const plan = document.getElementById('plan-comptable');
+  plan.style.display = plan.style.display === 'none' ? 'block' : 'none';
+  const pcgList = document.getElementById('pcg-list');
+  if (pcgList.innerHTML === '') {
+    comptesPCG.forEach(c => {
+      const li = document.createElement('li');
+      li.innerHTML = `${c.code} - ${c.libelle} <button onclick="copyToClipboard('${c.code}')">📋</button>`;
+      pcgList.appendChild(li);
+    });
+  }
+}
+
+function copyToClipboard(text) {
+  navigator.clipboard.writeText(text).then(() => alert(`Compte ${text} copié !`));
+}
+
+function searchPCG() {
+  const input = document.getElementById("search-pcg").value.toLowerCase();
+  const items = document.querySelectorAll("#pcg-list li");
+  items.forEach(li => {
+    li.style.display = li.textContent.toLowerCase().includes(input) ? '' : 'none';
+  });
+}
+
+window.onload = chargerOperation;
 </script>
 </body>
 </html>
-// La variable 'operations' est remplacée par une version contenant 50 cas variés
-const operations = {
-  facile: [
-    { description: "Encaissement d'une créance client de 1 500 € TTC.", solution: [[512, 'Débit', 1500], [411, 'Crédit', 1500]] },
-    { description: "Achat de fournitures de bureau pour 120 € TTC payé par chèque.", solution: [[6063, 'Débit', 100], [44566, 'Débit', 20], [512, 'Crédit', 120]] },
-    { description: "Vente de marchandises pour 240 € TTC, payé en espèces.", solution: [[531, 'Débit', 240], [707, 'Crédit', 200], [44571, 'Crédit', 40]] },
-    { description: "Paiement de l’assurance annuelle 1 200 € TTC par virement.", solution: [[616, 'Débit', 1000], [44566, 'Débit', 200], [512, 'Crédit', 1200]] },
-    { description: "Facture de téléphonie 60 € TTC à régler à échéance.", solution: [[626, 'Débit', 50], [44566, 'Débit', 10], [401, 'Crédit', 60]] },
-    { description: "Achat de timbres pour 10 € TTC en espèces.", solution: [[626, 'Débit', 8.33], [44566, 'Débit', 1.67], [531, 'Crédit', 10]] },
-    { description: "Paiement d'une facture de restaurant 90 € TTC par carte.", solution: [[6256, 'Débit', 75], [44566, 'Débit', 15], [512, 'Crédit', 90]] },
-    { description: "Encaissement d'un acompte client de 600 € TTC par virement.", solution: [[512, 'Débit', 600], [4191, 'Crédit', 600]] },
-    { description: "Achat de carburant : 72 € TTC réglé par carte.", solution: [[6061, 'Débit', 60], [44566, 'Débit', 12], [512, 'Crédit', 72]] },
-    { description: "Vente de prestations pour 300 € TTC, encaissées en espèces.", solution: [[531, 'Débit', 300], [706, 'Crédit', 250], [44571, 'Crédit', 50]] }
-  ],
-  moyen: [
-    { description: "Paiement d'un loyer de 800 € TTC par chèque.", solution: [[613, 'Débit', 727.27], [44566, 'Débit', 72.73], [512, 'Crédit', 800]] },
-    { description: "Facture fournisseur reçue : prestations pour 600 € HT.", solution: [[628, 'Débit', 600], [44566, 'Débit', 120], [401, 'Crédit', 720]] },
-    { description: "Achat d’un logiciel 1 800 € HT, paiement différé.", solution: [[6068, 'Débit', 1800], [44566, 'Débit', 360], [401, 'Crédit', 2160]] },
-    { description: "Paiement d'un consultant externe 1 000 € HT par virement.", solution: [[6226, 'Débit', 1000], [44566, 'Débit', 200], [512, 'Crédit', 1200]] },
-    { description: "Paiement d'une formation 720 € TTC en carte bancaire.", solution: [[618, 'Débit', 600], [44566, 'Débit', 120], [512, 'Crédit', 720]] },
-    { description: "Réception d’une facture de nettoyage 360 € HT.", solution: [[615, 'Débit', 360], [44566, 'Débit', 72], [401, 'Crédit', 432]] },
-    { description: "Règlement partiel d’une dette fournisseur 500 € par chèque.", solution: [[401, 'Débit', 500], [512, 'Crédit', 500]] },
-    { description: "Encaissement partiel d’une créance 800 € TTC.", solution: [[512, 'Débit', 800], [411, 'Crédit', 800]] },
-    { description: "Vente à crédit pour 2 400 € TTC.", solution: [[411, 'Débit', 2400], [707, 'Crédit', 2000], [44571, 'Crédit', 400]] },
-    { description: "Achat d’équipements de bureau à 360 € TTC à crédit.", solution: [[2183, 'Débit', 300], [44562, 'Débit', 60], [401, 'Crédit', 360]] }
-  ],
-  difficile: [
-    { description: "Achat de marchandises pour 1 000 € HT, payé par virement.", solution: [[607, 'Débit', 1000], [44566, 'Débit', 200], [512, 'Crédit', 1200]] },
-    { description: "Vente de produits finis pour 2 000 € HT, paiement comptant.", solution: [[512, 'Débit', 2400], [701, 'Crédit', 2000], [44571, 'Crédit', 400]] },
-    { description: "Réception d'une facture de publicité : 1 200 € HT.", solution: [[623, 'Débit', 1200], [44566, 'Débit', 240], [401, 'Crédit', 1440]] },
-    { description: "Paiement des salaires nets : 8 000 €.", solution: [[421, 'Débit', 8000], [512, 'Crédit', 8000]] },
-    { description: "Paiement des cotisations sociales : 3 500 €.", solution: [[431, 'Débit', 3500], [512, 'Crédit', 3500]] },
-    { description: "Dotation aux amortissements sur un véhicule : 2 000 €.", solution: [[6811, 'Débit', 2000], [28182, 'Crédit', 2000]] },
-    { description: "Provision pour litige estimée à 5 000 €.", solution: [[6815, 'Débit', 5000], [1511, 'Crédit', 5000]] },
-    { description: "Constatation d’une charge constatée d’avance de 1 200 €.", solution: [[486, 'Débit', 1200], [616, 'Crédit', 1200]] },
-    { description: "Facture non parvenue estimée à 2 000 € HT.", solution: [[615, 'Débit', 2000], [408, 'Crédit', 2000]] },
-    { description: "TVA collectée à déclarer : 6 000 €.", solution: [[44571, 'Débit', 6000], [44551, 'Crédit', 6000]] }
-  ]
-};
