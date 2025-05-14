@@ -76,47 +76,15 @@
 let score = 0;
 let niveau = 'facile';
 let currentOp;
+let libellesPCG = {};
 
 const operations = {
   facile: [
     { description: "Achat de stylos pour 50 € HT, TVA 20%, payé en espèces.", solution: [[6064, 'Débit', 50], [44566, 'Débit', 10], [531, 'Crédit', 60]] },
     { description: "Vente de marchandises 200 € HT, TVA 20%, payé par carte.", solution: [[512, 'Débit', 240], [707, 'Crédit', 200], [44571, 'Crédit', 40]] },
-    { description: "Achat de fournitures de bureau pour 120 € TTC payé par chèque.", solution: [[6063, 'Débit', 100], [44566, 'Débit', 20], [512, 'Crédit', 120]] },
-    { description: "Encaissement d'une créance client de 1 500 € TTC.", solution: [[512, 'Débit', 1500], [411, 'Crédit', 1500]] },
-    { description: "Paiement de l’assurance annuelle 1 200 € TTC par virement.", solution: [[616, 'Débit', 1000], [44566, 'Débit', 200], [512, 'Crédit', 1200]] },
-    { description: "Facture de téléphonie 60 € TTC à régler à échéance.", solution: [[626, 'Débit', 50], [44566, 'Débit', 10], [401, 'Crédit', 60]] },
-    { description: "Paiement d'une facture de restaurant 90 € TTC par carte.", solution: [[6256, 'Débit', 75], [44566, 'Débit', 15], [512, 'Crédit', 90]] },
-    { description: "Achat de carburant : 72 € TTC réglé par carte.", solution: [[6061, 'Débit', 60], [44566, 'Débit', 12], [512, 'Crédit', 72]] },
-    { description: "Vente de prestations pour 300 € TTC, encaissées en espèces.", solution: [[531, 'Débit', 300], [706, 'Crédit', 250], [44571, 'Crédit', 50]] },
-    { description: "Encaissement d'un acompte client de 600 € TTC par virement.", solution: [[512, 'Débit', 600], [4191, 'Crédit', 600]] }
-  ],
-  moyen: [
-    { description: "Paiement d'une facture fournisseur 720 € TTC par virement.", solution: [[401, 'Débit', 720], [512, 'Crédit', 720]] },
-    { description: "Encaissement d'un acompte client 300 € TTC.", solution: [[512, 'Débit', 300], [4191, 'Crédit', 300]] },
-    { description: "Achat d’un logiciel 1 800 € HT, paiement différé.", solution: [[6068, 'Débit', 1800], [44566, 'Débit', 360], [401, 'Crédit', 2160]] },
-    { description: "Paiement d'un consultant externe 1 000 € HT par virement.", solution: [[6226, 'Débit', 1000], [44566, 'Débit', 200], [512, 'Crédit', 1200]] },
-    { description: "Paiement d'une formation 720 € TTC en carte bancaire.", solution: [[618, 'Débit', 600], [44566, 'Débit', 120], [512, 'Crédit', 720]] },
-    { description: "Réception d’une facture de nettoyage 360 € HT.", solution: [[615, 'Débit', 360], [44566, 'Débit', 72], [401, 'Crédit', 432]] },
-    { description: "Règlement partiel d’une dette fournisseur 500 € par chèque.", solution: [[401, 'Débit', 500], [512, 'Crédit', 500]] },
-    { description: "Encaissement partiel d’une créance 800 € TTC.", solution: [[512, 'Débit', 800], [411, 'Crédit', 800]] },
-    { description: "Vente à crédit pour 2 400 € TTC.", solution: [[411, 'Débit', 2400], [707, 'Crédit', 2000], [44571, 'Crédit', 400]] },
-    { description: "Achat d’équipements de bureau à 360 € TTC à crédit.", solution: [[2183, 'Débit', 300], [44562, 'Débit', 60], [401, 'Crédit', 360]] }
-  ],
-  difficile: [
-    { description: "Dotation aux amortissements sur un véhicule : 1 200 €.", solution: [[6811, 'Débit', 1200], [28182, 'Crédit', 1200]] },
-    { description: "Provision pour litige estimée à 5 000 €.", solution: [[6815, 'Débit', 5000], [1511, 'Crédit', 5000]] },
-    { description: "Constatation d’une charge constatée d’avance de 1 200 €.", solution: [[486, 'Débit', 1200], [616, 'Crédit', 1200]] },
-    { description: "Facture non parvenue estimée à 2 000 € HT.", solution: [[615, 'Débit', 2000], [408, 'Crédit', 2000]] },
-    { description: "TVA collectée à déclarer : 6 000 €.", solution: [[44571, 'Débit', 6000], [44551, 'Crédit', 6000]] },
-    { description: "Vente de produits finis pour 2 000 € HT, paiement comptant.", solution: [[512, 'Débit', 2400], [701, 'Crédit', 2000], [44571, 'Crédit', 400]] },
-    { description: "Réception d'une facture de publicité : 1 200 € HT.", solution: [[623, 'Débit', 1200], [44566, 'Débit', 240], [401, 'Crédit', 1440]] },
-    { description: "Paiement des salaires nets : 8 000 €.", solution: [[421, 'Débit', 8000], [512, 'Crédit', 8000]] },
-    { description: "Paiement des cotisations sociales : 3 500 €.", solution: [[431, 'Débit', 3500], [512, 'Crédit', 3500]] },
-    { description: "Virement entre comptes bancaires : 2 000 €.", solution: [[512, 'Débit', 2000], [512, 'Crédit', 2000]] }
+    { description: "Achat de fournitures de bureau pour 120 € TTC payé par chèque.", solution: [[6063, 'Débit', 100], [44566, 'Débit', 20], [512, 'Crédit', 120]] }
   ]
 };
-
-
 
 function ajouterLigne() {
   const div = document.createElement("div");
@@ -135,7 +103,7 @@ function ajouterLigne() {
 function chargerOperation() {
   const opList = operations[niveau];
   currentOp = opList[Math.floor(Math.random() * opList.length)];
-  document.getElementById("operation").innerText = currentOp.description;
+  document.getElementById("operation").innerHTML = `<div style='background:#e0f2fe;border-left:4px solid #0284c7;padding:10px;border-radius:8px;font-size:18px;margin-bottom:15px;'>📘 <strong>Opération :</strong> ${currentOp.description}</div>`;
   document.getElementById("ecritures").innerHTML = '';
   ajouterLigne();
 }
@@ -168,172 +136,20 @@ function togglePlanComptable() {
   const plan = document.getElementById('plan-comptable');
   plan.style.display = plan.style.display === 'none' ? 'block' : 'none';
   const pcgList = document.getElementById('pcg-list');
-  if (pcgList.innerHTML === '') {
-    const codes = Object.keys(libellesPCG).sort();
-    for (const code of codes) {
-      const li = document.createElement('li');
-      li.textContent = `${code} - ${libellesPCG[code]}`;
-      pcgList.appendChild(li);
-    }
+  pcgList.innerHTML = '';
+  if (Object.keys(libellesPCG).length === 0) {
+    const errorMessage = document.createElement('p');
+    errorMessage.style.color = 'red';
+    errorMessage.textContent = "❌ Impossible d'afficher le plan comptable. Le fichier n'a pas été chargé.";
+    pcgList.appendChild(errorMessage);
+    return;
   }
-} - ${libellesPCG[code]}`;
-      pcgList.appendChild(li);
-    }
+  const codes = Object.keys(libellesPCG).sort();
+  for (const code of codes) {
+    const li = document.createElement('li');
+    li.textContent = `${code} - ${libellesPCG[code]}`;
+    pcgList.appendChild(li);
   }
-}`;
-      toggleButton.style.margin = '5px 0';
-      toggleButton.style.cursor = 'pointer';
-      toggleButton.onclick = function () {
-        ul.style.display = ul.style.display === 'none' ? 'block' : 'none';
-        toggleButton.textContent = `${ul.style.display === 'none' ? '▶' : '▼'} Classe ${i}`;
-      };
-
-      const ul = document.createElement('ul');
-      ul.style.display = 'none';
-
-      for (let j = 0; j <= 99; j++) {
-        for (let k = 0; k <= 1; k++) { // simulate multiple levels
-          const suffix = k === 0 ? '' : `0${k}`;
-          const code = `${i}${j.toString().padStart(2, '0')}${suffix}`;
-          const li = document.createElement('li');
-          
-const libelle = libellesPCG[code] || `Compte ${code}`;
-li.textContent = `${code} - ${libelle}`;
-          ul.appendChild(li);
-        }
-      }
-
-      group.appendChild(toggleButton);
-      group.appendChild(ul);
-      pcgList.appendChild(group);
-    }
-  }
-}`;
-      toggleButton.style.margin = '5px 0';
-      toggleButton.style.cursor = 'pointer';
-      toggleButton.onclick = function () {
-        ul.style.display = ul.style.display === 'none' ? 'block' : 'none';
-        toggleButton.textContent = `${ul.style.display === 'none' ? '▶' : '▼'} Classe ${i}`;
-      };
-
-      const ul = document.createElement('ul');
-      ul.style.display = 'none';
-
-      for (let j = 0; j <= 99; j++) {
-        const code = `${i}${j.toString().padStart(2, '0')}`;
-        const li = document.createElement('li');
-        const libellesPCG = {
-  '101': 'Capital social',
-  '106': 'Réserves',
-  '120': 'Résultat de l'exercice (bénéfice)',
-  '129': 'Résultat de l'exercice (perte)',
-  '201': 'Frais d’établissement',
-  '2183': 'Matériel de transport',
-  '2184': 'Mobilier de bureau',
-  '28182': 'Amortissement du matériel de transport',
-  '401': 'Fournisseurs',
-  '411': 'Clients',
-  '4191': 'Clients - Avances reçues',
-  '512': 'Banque',
-  '531': 'Caisse',
-  '6063': 'Fournitures d’entretien',
-  '6064': 'Fournitures administratives',
-  '607': 'Achats de marchandises',
-  '613': 'Locations',
-  '615': 'Entretien et réparations',
-  '616': 'Primes d’assurances',
-  '6226': 'Honoraires',
-  '623': 'Publicité',
-  '6256': 'Réceptions',
-  '626': 'Télécommunications',
-  '628': 'Divers',
-  '645': 'Charges sociales',
-  '6811': 'Dotation aux amortissements',
-  '6815': 'Dotation aux provisions',
-  '701': 'Ventes de produits finis',
-  '706': 'Prestations de services',
-  '707': 'Ventes de marchandises',
-  '44562': 'TVA déductible sur immobilisations',
-  '44566': 'TVA déductible sur autres biens et services',
-  '44571': 'TVA collectée',
-  '44551': 'TVA à décaisser'
-};
-const libelle = libellesPCG[code] || `Compte ${code}`;
-li.textContent = `${code} - ${libelle}`;
-        ul.appendChild(li);
-      }
-
-      group.appendChild(toggleButton);
-      group.appendChild(ul);
-      pcgList.appendChild(group);
-    }
-  }
-} :</strong>`;
-      const ul = document.createElement('ul');
-      for (let j = 0; j <= 99; j++) {
-        const code = `${i}${j.toString().padStart(2, '0')}`;
-        const li = document.createElement('li');
-        const libellesPCG = {
-  '101': 'Capital social',
-  '106': 'Réserves',
-  '120': 'Résultat de l'exercice (bénéfice)',
-  '129': 'Résultat de l'exercice (perte)',
-  '201': 'Frais d’établissement',
-  '2183': 'Matériel de transport',
-  '2184': 'Mobilier de bureau',
-  '28182': 'Amortissement du matériel de transport',
-  '401': 'Fournisseurs',
-  '411': 'Clients',
-  '4191': 'Clients - Avances reçues',
-  '512': 'Banque',
-  '531': 'Caisse',
-  '6063': 'Fournitures d’entretien',
-  '6064': 'Fournitures administratives',
-  '607': 'Achats de marchandises',
-  '613': 'Locations',
-  '615': 'Entretien et réparations',
-  '616': 'Primes d’assurances',
-  '6226': 'Honoraires',
-  '623': 'Publicité',
-  '6256': 'Réceptions',
-  '626': 'Télécommunications',
-  '628': 'Divers',
-  '645': 'Charges sociales',
-  '6811': 'Dotation aux amortissements',
-  '6815': 'Dotation aux provisions',
-  '701': 'Ventes de produits finis',
-  '706': 'Prestations de services',
-  '707': 'Ventes de marchandises',
-  '44562': 'TVA déductible sur immobilisations',
-  '44566': 'TVA déductible sur autres biens et services',
-  '44571': 'TVA collectée',
-  '44551': 'TVA à décaisser'
-};
-const libelle = libellesPCG[code] || `Compte ${code}`;
-li.textContent = `${code} - ${libelle}`;
-        ul.appendChild(li);
-      }
-      group.appendChild(ul);
-      pcgList.appendChild(group);
-    }
-  }
-}${j.toString().padStart(2, '0')}`;
-        comptes.push({ code: code, libelle: `Compte ${code}` });
-      }
-    }
-    comptes.forEach(c => {
-      const li = document.createElement('li');
-      li.textContent = `${c.code} - ${c.libelle}`;
-      pcgList.appendChild(li);
-    });
-  }
-} - ${c.libelle} <button onclick="copyToClipboard('${c.code}')">📋</button>`;
-      pcgList.appendChild(li);
-    });
-  }
-}
-
- copié !`));
 }
 
 function searchPCG() {
@@ -344,7 +160,21 @@ function searchPCG() {
   });
 }
 
-window.onload = chargerOperation;
+window.onload = function() {
+  chargerOperation();
+  fetch("pcg2025.json")
+    .then(response => {
+      if (!response.ok) throw new Error("Fichier introuvable");
+      return response.json();
+    })
+    .then(data => {
+      libellesPCG = data;
+    })
+    .catch(error => {
+      console.error("Erreur lors du chargement du PCG:", error);
+      document.getElementById("operation").innerText = "❌ Impossible de charger le plan comptable : données manquantes.";
+    });
+};
 </script>
 </body>
 </html>
